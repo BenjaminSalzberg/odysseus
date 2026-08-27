@@ -28,7 +28,7 @@ services:
       - RESEARCH_LLM_ENDPOINT=${RESEARCH_LLM_ENDPOINT:-}
       - HF_TOKEN=${HF_TOKEN:-}
       - HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN:-}
-      - SEARXNG_INSTANCE=http://searxng:8080
+      - SEARXNG_INSTANCE=http://host.docker.internal:15555
       - CHROMADB_HOST=chromadb
       - CHROMADB_PORT=8000
       - DATABASE_URL=${DATABASE_URL:-sqlite:///./data/app.db}
@@ -81,8 +81,6 @@ services:
       - PUID=${PUID:-1000}
       - PGID=${PGID:-1000}
     depends_on:
-      searxng:
-        condition: service_healthy
       chromadb:
         condition: service_started
     restart: unless-stopped
@@ -162,6 +160,11 @@ services:
     environment:
       - NTFY_BASE_URL=${NTFY_BASE_URL:-http://localhost:8091}
     restart: unless-stopped
+
+networks:
+  default:
+    name: ollamaarc_default
+    external: true
 
 volumes:
   searxng-data:
